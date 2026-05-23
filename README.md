@@ -3,10 +3,10 @@
 ## Pano pag run han system
 
 1. Clone the repository
-   - Open VS CODE, pakadto ha "Terminal" ngan ig type ini:  https://github.com/RaileyCabiya-an/teacher-evaluation-system.git
+   - Open VS CODE, pakadto ha igbaw, ig click an "Terminal" ngan ig type ini:  https://github.com/RaileyCabiya-an/teacher-evaluation-system.git
 
 2. Go to project folder
-   - type ini :  cd Teacher-Evaluation-System
+   - type ini ha terminal:  cd Teacher-Evaluation-System
 
 3. Create virtual environment
    - Ig type ini ha terminal:  python -m venv env
@@ -15,7 +15,7 @@
    - venv\Scripts\activate 
 
 5. Install requirements
-   - ig type ini:  pip install -r requirements.txt
+   - ig type ini ha terminal:  pip install -r requirements.txt
 
 6. Setup database (PostgreSQL)
 - Install anay "PostgreSQL". Then open tas follow instructions. Paghimo password nga manunumduman mo. After hito, click server tas right click database. Tas create database.
@@ -33,16 +33,16 @@ DATABASES = {
 }
 
 7. Run migrations
-- igtype ini:  python manage.py migrate
+- igtype ini ha terminal:  python manage.py migrate
 
 8. Run server
-- type ini:  python manage.py runserver
+- type ini ha terminal:  python manage.py runserver
 
 Open browser
 - click ini ha terminal http://127.0.0.1:8000, or copy tas paste ha browser
 
 
-System Admin Login
+Adi an Email tas as Password han Admin
 
 Email: systemadmin@gmail.com  
 Password: systemadmin123
