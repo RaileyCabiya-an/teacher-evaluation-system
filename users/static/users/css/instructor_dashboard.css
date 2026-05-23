@@ -1,0 +1,214 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap');
+
+:root {
+    --navy: #0f1e4a;
+    --navy-light: #1c3272;
+    --gold: #d4af37;
+    --bg: #f4f7fb;
+    --surface: #ffffff;
+    --text: #1e293b;
+    --muted: #64748b;
+    --border: #dbe4ef;
+    --shadow: 0 10px 30px rgba(15,23,42,.05);
+}
+
+/* BASE */
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+/* WRAPPER */
+.dashboard-wrapper {
+    max-width: 1250px;
+    margin: auto;
+    padding: 2rem 1.2rem 4rem;
+}
+
+/* HEADER */
+.dashboard-header {
+    background: linear-gradient(135deg, var(--navy), var(--navy-light));
+    color: white;
+    padding: 2rem;
+    border-radius: 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+    box-shadow: var(--shadow);
+}
+
+.dashboard-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    margin-bottom: 0.6rem;
+}
+
+.dashboard-header p {
+    color: rgba(255,255,255,0.75);
+    font-size: 0.95rem;
+}
+
+/* BADGE */
+.portal-badge {
+    display: inline-block;
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    background: rgba(212,175,55,0.15);
+    border: 1px solid rgba(212,175,55,0.25);
+    color: #f5e6a8;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+/* RIGHT HEADER ACTIONS */
+.header-actions {
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+}
+
+/* FILTER */
+.filter-box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-width: 180px;
+}
+
+.filter-box label {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.7);
+}
+
+.filter-box select {
+    padding: 0.6rem 0.8rem;
+    border-radius: 10px;
+    border: none;
+    background: white;
+    font-weight: 600;
+    color: var(--navy);
+}
+
+/* LOGOUT BUTTON */
+.logout-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+
+    background: white;
+    color: var(--navy);
+
+    border: none;
+    padding: 0.85rem 1.3rem;
+    border-radius: 14px;
+
+    font-size: 0.9rem;
+    font-weight: 700;
+
+    cursor: pointer;
+    white-space: nowrap;
+
+    transition: all .25s ease;
+}
+
+.logout-btn:hover {
+    transform: translateY(-2px);
+    background: #f8fafc;
+}
+
+/* METRICS */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.metric-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 1.2rem;
+    text-align: center;
+    box-shadow: var(--shadow);
+}
+
+.metric-card h4 {
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+}
+
+.metric-value {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--navy);
+}
+
+/* CHARTS */
+.charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+    margin-top: 1.5rem;
+}
+
+.chart-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+}
+
+.chart-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: var(--navy);
+}
+
+.chart-box {
+    height: 320px;
+}
+
+/* FEEDBACK */
+.feedback-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+    box-shadow: var(--shadow);
+}
+
+.comment-item {
+    padding: 1rem;
+    border-left: 4px solid var(--gold);
+    background: #fafafa;
+    border-radius: 12px;
+    margin-bottom: 0.8rem;
+}
+
+.comment-item span {
+    font-size: 0.75rem;
+    color: var(--muted);
+}
+
+/* RESPONSIVE */
+@media (max-width: 992px) {
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    .charts-grid { grid-template-columns: 1fr; }
+    .dashboard-header { flex-direction: column; }
+}
+
+@media (max-width: 600px) {
+    .metrics-grid { grid-template-columns: 1fr; }
+}
+

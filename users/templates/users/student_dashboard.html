@@ -1,0 +1,1489 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Evaluation Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+
+        :root {
+            --sidebar-w:  240px;
+            --topbar-h:   56px;
+
+            /* Sidebar */
+            --sb-bg:          #0b1229;
+            --sb-border:      rgba(255,255,255,0.07);
+            --sb-text:        rgba(255,255,255,0.58);
+            --sb-text-strong: rgba(255,255,255,0.90);
+            --sb-label:       rgba(255,255,255,0.26);
+            --sb-hover-bg:    rgba(255,255,255,0.06);
+            --sb-active-bg:   rgba(201,168,76,0.14);
+            --sb-active-bar:  #c9a84c;
+
+            /* Palette */
+            --navy-950:   #06091a;
+            --navy-900:   #0b1229;
+            --navy-800:   #0f1d40;
+            --navy-700:   #162550;
+            --navy-600:   #1e3163;
+            --gold:       #c9a84c;
+            --gold-light: #e8c97a;
+            --gold-pale:  #f5e9c8;
+            --green-700:  #15803d;
+            --green-600:  #16a34a;
+            --green-100:  #dcfce7;
+            --amber-700:  #92400e;
+            --amber-100:  #fef3c7;
+            --red-700:    #b91c1c;
+            --red-100:    #fee2e2;
+            --slate-900:  #0f172a;
+            --slate-700:  #334155;
+            --slate-600:  #475569;
+            --slate-500:  #64748b;
+            --slate-400:  #94a3b8;
+            --slate-300:  #cbd5e1;
+            --slate-200:  #e2e8f0;
+            --slate-100:  #f1f5f9;
+            --slate-50:   #f8fafc;
+            --white:      #ffffff;
+            --off-white:  #f7f8fc;
+
+            --font-display: 'Playfair Display', Georgia, serif;
+            --font-body:    'Source Sans 3', system-ui, sans-serif;
+
+            --r-sm:  6px;
+            --r-md:  10px;
+            --r-lg:  16px;
+            --r-xl:  22px;
+
+            --shadow-xs: 0 1px 4px rgba(6,9,26,0.06);
+            --shadow-sm: 0 2px 10px rgba(6,9,26,0.08);
+            --shadow-md: 0 8px 28px rgba(6,9,26,0.12);
+            --shadow-lg: 0 16px 48px rgba(6,9,26,0.18);
+        }
+
+        /* ── Reset ── */
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        html { font-size:16px; }
+        body {
+            font-family: var(--font-body);
+            background: var(--off-white);
+            color: var(--slate-700);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* ============================================================
+           APP SHELL
+           ============================================================ */
+        .app { display:flex; height:100vh; overflow:hidden; }
+
+        /* ============================================================
+           SIDEBAR
+           ============================================================ */
+        .sidebar {
+            width: var(--sidebar-w);
+            flex-shrink: 0;
+            background: var(--sb-bg);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            transition: width 0.3s ease;
+        }
+
+        /* Fine grid texture */
+        .sidebar::before {
+            content:'';
+            position:absolute; inset:0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events:none; z-index:0;
+        }
+
+        /* Faint gold glow at bottom */
+        .sidebar::after {
+            content:'';
+            position:absolute; bottom:-80px; left:-60px;
+            width:300px; height:300px;
+            background: radial-gradient(circle, rgba(201,168,76,0.10) 0%, transparent 70%);
+            pointer-events:none; z-index:0;
+        }
+
+        .sidebar-inner {
+            position:relative; z-index:1;
+            display:flex; flex-direction:column; height:100%;
+            overflow-y:auto; overflow-x:hidden;
+            scrollbar-width:thin;
+            scrollbar-color: rgba(255,255,255,0.08) transparent;
+        }
+        .sidebar-inner::-webkit-scrollbar { width:3px; }
+        .sidebar-inner::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.08); border-radius:4px; }
+
+        /* ── Brand ── */
+        .brand {
+            padding: 18px 16px 14px;
+            border-bottom: 1px solid var(--sb-border);
+            flex-shrink:0;
+        }
+
+        .brand-logo-row { display:flex; align-items:center; gap:10px; margin-bottom:4px; }
+
+        .brand-logo-ring {
+            width:34px; height:34px;
+            border-radius:50%; padding:2px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            flex-shrink:0;
+            box-shadow: 0 2px 10px rgba(201,168,76,0.30);
+        }
+
+        .brand-logo { width:100%; height:100%; object-fit:cover; border-radius:50%; display:block; }
+
+        .brand-text { display:flex; flex-direction:column; gap:1px; }
+
+        .brand-name {
+            font-family: var(--font-display);
+            font-size:13px; font-weight:700;
+            color: var(--sb-text-strong);
+            line-height:1.2;
+        }
+
+        .brand-sub {
+            font-size:9.5px; color: var(--sb-label);
+            font-weight:400; letter-spacing:0.04em; text-transform:uppercase;
+        }
+
+        .brand-divider {
+            width:34px; height:1.5px;
+            background: linear-gradient(90deg, var(--gold), transparent);
+            border-radius:2px; margin-top:10px;
+        }
+
+        /* ── Nav ── */
+        .nav { flex:1; padding:12px 10px; display:flex; flex-direction:column; gap:2px; }
+
+        .nav-label {
+            display:block;
+            font-size:9px; font-weight:700; letter-spacing:0.18em;
+            text-transform:uppercase; color: var(--sb-label);
+            padding:10px 8px 4px;
+        }
+
+        .nav-link {
+            display:flex; align-items:center; gap:10px;
+            padding:9px 10px; border-radius: var(--r-sm);
+            text-decoration:none; color: var(--sb-text);
+            font-size:13px; font-weight:400;
+            transition: background 0.18s ease, color 0.18s ease;
+            position:relative; cursor:pointer; border:none; background:none;
+            width:100%; text-align:left;
+        }
+
+        .nav-link:hover { background: var(--sb-hover-bg); color: var(--sb-text-strong); }
+
+        .nav-link.active { background: var(--sb-active-bg); color: var(--sb-text-strong); font-weight:600; }
+
+        .nav-link.active::before {
+            content:''; position:absolute; left:0; top:6px; bottom:6px;
+            width:3px; background: var(--sb-active-bar);
+            border-radius:0 3px 3px 0;
+        }
+
+        .nav-icon { width:18px; height:18px; display:flex; align-items:center; justify-content:center; flex-shrink:0; opacity:0.65; }
+        .nav-link:hover .nav-icon, .nav-link.active .nav-icon { opacity:1; }
+
+        /* ── Sidebar footer ── */
+        .sidebar-footer {
+            padding:12px 10px 16px;
+            border-top:1px solid var(--sb-border); flex-shrink:0;
+        }
+
+        .user-strip {
+            display:flex; align-items:center; gap:10px;
+            padding:9px 10px; border-radius: var(--r-sm);
+            background:rgba(255,255,255,0.04);
+            border:1px solid rgba(255,255,255,0.06); margin-bottom:10px;
+        }
+
+        .user-avatar {
+            width:30px; height:30px; border-radius:50%;
+            background: linear-gradient(135deg, var(--navy-700), var(--navy-600));
+            border:1.5px solid rgba(201,168,76,0.40);
+            display:flex; align-items:center; justify-content:center;
+            flex-shrink:0;
+            font-family: var(--font-display); font-size:11px; font-weight:700;
+            color: var(--gold-light);
+        }
+
+        .user-info { flex:1; min-width:0; }
+
+        .user-name {
+            font-size:12px; font-weight:600; color: var(--sb-text-strong);
+            white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+        }
+
+        .user-role { font-size:10px; color: var(--sb-label); margin-top:1px; }
+
+        .logout-btn {
+            width:100%; padding:8px 14px;
+            border:1px solid rgba(239,68,68,0.28);
+            background:rgba(239,68,68,0.06);
+            color:rgba(239,68,68,0.80);
+            border-radius: var(--r-sm);
+            font-family: var(--font-body); font-size:12.5px; font-weight:500;
+            cursor:pointer;
+            transition: background 0.2s, color 0.2s, border-color 0.2s;
+            display:flex; align-items:center; justify-content:center; gap:7px;
+        }
+        .logout-btn:hover { background:rgba(239,68,68,0.15); border-color:rgba(239,68,68,0.50); color:#fca5a5; }
+
+        /* ============================================================
+           MAIN
+           ============================================================ */
+        .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+
+        /* ── Topbar ── */
+        .topbar {
+            height: var(--topbar-h);
+            background: var(--white);
+            border-bottom:1px solid var(--slate-200);
+            display:flex; justify-content:space-between; align-items:center;
+            padding:0 24px; flex-shrink:0;
+        }
+
+        .topbar-title {
+            font-family: var(--font-display);
+            font-size:15px; font-weight:700;
+            color: var(--navy-900);
+            padding-left:12px;
+            border-left:2px solid var(--gold);
+        }
+
+        .topbar-badge {
+            font-family: var(--font-body);
+            font-size:11px; font-weight:600;
+            letter-spacing:0.12em; text-transform:uppercase;
+            color: var(--gold);
+            background:rgba(201,168,76,0.10);
+            border:1px solid rgba(201,168,76,0.30);
+            padding:4px 13px; border-radius:100px;
+        }
+
+        /* ── Content ── */
+        .content { flex:1; overflow-y:auto; }
+
+        /* ============================================================
+           VIEWS (shown/hidden via JS)
+           ============================================================ */
+        .view { display:none; padding:24px; min-height:100%; }
+        .view.active { display:block; }
+
+        /* ============================================================
+           SHARED COMPONENTS
+           ============================================================ */
+
+        /* Page heading */
+        .page-heading { margin-bottom:22px; }
+
+        .page-tag {
+            display:inline-block;
+            font-size:10px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase;
+            color: var(--gold);
+            background:rgba(201,168,76,0.10);
+            border:1px solid rgba(201,168,76,0.28);
+            padding:3px 12px; border-radius:100px; margin-bottom:8px;
+        }
+
+        .page-title {
+            font-family: var(--font-display);
+            font-size:20px; font-weight:700;
+            color: var(--navy-900); margin:0 0 4px; line-height:1.2;
+        }
+
+        .page-sub { font-size:13px; color: var(--slate-500); margin:0; }
+
+        /* Panel card */
+        .panel {
+            background: var(--white);
+            border:1px solid var(--slate-200);
+            border-radius: var(--r-xl);
+            overflow:hidden;
+            box-shadow: var(--shadow-xs);
+            margin-bottom:18px;
+        }
+
+        .panel__header {
+            padding:18px 22px 14px;
+            border-bottom:1px solid var(--slate-100);
+            display:flex; flex-direction:column; gap:4px;
+        }
+
+        .panel__tag {
+            display:inline-block;
+            font-size:10px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase;
+            color: var(--gold);
+            background:rgba(201,168,76,0.10);
+            border:1px solid rgba(201,168,76,0.28);
+            padding:3px 10px; border-radius:100px; align-self:flex-start;
+        }
+
+        .panel__title {
+            font-family: var(--font-display);
+            font-size:17px; font-weight:700;
+            color: var(--navy-900); margin:0; line-height:1.2;
+        }
+
+        .panel__body { padding:20px 22px; }
+
+        /* ============================================================
+           VIEW 1 — DASHBOARD
+           ============================================================ */
+
+        /* Active Period Card */
+        .period-banner {
+            background: linear-gradient(155deg, var(--navy-800) 0%, var(--navy-600) 100%);
+            border-radius: var(--r-xl);
+            border:1px solid rgba(201,168,76,0.22);
+            padding:24px 26px;
+            color: var(--white);
+            position:relative; overflow:hidden;
+            box-shadow: var(--shadow-lg);
+            margin-bottom:18px;
+        }
+
+        .period-banner__grid {
+            position:absolute; inset:0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+            background-size: 36px 36px;
+            pointer-events:none;
+        }
+
+        .period-banner__inner { position:relative; z-index:1; }
+
+        .period-banner__eyebrow {
+            display:inline-flex; align-items:center; gap:6px;
+            font-size:10px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase;
+            color: var(--gold);
+            background:rgba(201,168,76,0.14);
+            border:1px solid rgba(201,168,76,0.30);
+            padding:4px 12px 4px 10px; border-radius:100px;
+            margin-bottom:14px;
+        }
+
+        .period-banner__title {
+            font-family: var(--font-display);
+            font-size:22px; font-weight:700; color: var(--white);
+            margin:0 0 4px; line-height:1.2;
+        }
+
+        .period-banner__sub { font-size:13px; color:rgba(255,255,255,0.60); margin:0 0 18px; }
+
+        .period-meta-row {
+            display:flex; gap:0;
+            background:rgba(255,255,255,0.06);
+            border:1px solid rgba(255,255,255,0.10);
+            border-radius: var(--r-md);
+            overflow:hidden;
+        }
+
+        .period-meta-item {
+            flex:1; padding:12px 14px;
+            display:flex; flex-direction:column; gap:3px;
+            border-right:1px solid rgba(255,255,255,0.08);
+        }
+
+        .period-meta-item:last-child { border-right:none; }
+
+        .period-meta-item__label {
+            font-size:9.5px; font-weight:700; letter-spacing:0.12em;
+            text-transform:uppercase; color:rgba(255,255,255,0.40);
+        }
+
+        .period-meta-item__value {
+            font-family: var(--font-display); font-size:14px; font-weight:700;
+            color: var(--white); line-height:1.2;
+        }
+
+        .status-active {
+            display:inline-flex; align-items:center; gap:6px;
+            font-size:11px; font-weight:700; color: var(--green-600);
+            background:rgba(22,163,74,0.15); border:1px solid rgba(22,163,74,0.30);
+            padding:3px 10px; border-radius:100px;
+        }
+
+        .status-active__dot {
+            width:6px; height:6px; border-radius:50%; background: var(--green-600);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%,100% { opacity:1; transform:scale(1); }
+            50%      { opacity:0.5; transform:scale(0.7); }
+        }
+
+        /* No active period */
+        .period-closed {
+            background: var(--white); border:1px solid var(--slate-200);
+            border-radius: var(--r-xl); padding:32px;
+            text-align:center; margin-bottom:18px;
+        }
+
+        .period-closed svg { color: var(--slate-300); margin-bottom:10px; }
+        .period-closed h4 { font-family: var(--font-display); font-size:17px; color: var(--navy-900); margin:0 0 6px; }
+        .period-closed p  { font-size:13px; color: var(--slate-400); margin:0; }
+
+        /* Evaluation progress */
+        .progress-row {
+            display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:18px;
+        }
+
+        .prog-card {
+            background: var(--white); border:1px solid var(--slate-200);
+            border-radius: var(--r-lg); padding:18px 16px 14px;
+            display:flex; align-items:flex-start; gap:12px;
+            position:relative; overflow:hidden;
+            transition: transform 0.22s ease, box-shadow 0.22s ease;
+        }
+
+        .prog-card:hover { transform:translateY(-2px); box-shadow: var(--shadow-md); }
+
+        .prog-card__bar {
+            position:absolute; bottom:0; left:0; right:0; height:3px;
+            border-radius:0 0 var(--r-lg) var(--r-lg);
+        }
+
+        .prog-card--completed .prog-card__bar { background: var(--green-600); }
+        .prog-card--pending   .prog-card__bar { background: var(--gold); }
+
+        .prog-icon {
+            width:42px; height:42px; border-radius: var(--r-md);
+            display:flex; align-items:center; justify-content:center; flex-shrink:0;
+        }
+
+        .prog-icon--green { background:rgba(22,163,74,0.10); color: var(--green-700); }
+        .prog-icon--gold  { background:rgba(201,168,76,0.12); color:#7a5c14; }
+
+        .prog-card__body { display:flex; flex-direction:column; gap:4px; }
+
+        .prog-label {
+            font-size:10.5px; font-weight:700; letter-spacing:0.10em;
+            text-transform:uppercase; color: var(--slate-400);
+        }
+
+        .prog-value {
+            font-family: var(--font-display); font-size:30px; font-weight:700;
+            color: var(--navy-900); line-height:1;
+        }
+
+        /* Instruction card */
+        .instruction-card {
+            background: var(--white); border:1px solid var(--slate-200);
+            border-radius: var(--r-xl); overflow:hidden; box-shadow: var(--shadow-xs);
+            margin-bottom:18px;
+        }
+
+        .instruction-header {
+            padding:16px 22px 12px;
+            border-bottom:1px solid var(--slate-100);
+        }
+
+        .instruction-header .panel__tag { margin-bottom:4px; }
+
+        .instruction-list { padding:20px 22px; display:flex; flex-direction:column; gap:12px; }
+
+        .instruction-item {
+            display:flex; align-items:flex-start; gap:12px;
+        }
+
+        .instruction-item__num {
+            width:26px; height:26px; flex-shrink:0;
+            border-radius:50%; background:rgba(201,168,76,0.12);
+            border:1px solid rgba(201,168,76,0.28); color:#7a5c14;
+            font-family: var(--font-display); font-size:12px; font-weight:700;
+            display:flex; align-items:center; justify-content:center;
+        }
+
+        .instruction-item__text {
+            font-size:13.5px; color: var(--slate-700); line-height:1.6; padding-top:3px;
+        }
+
+        /* Countdown */
+        .countdown-bar {
+            background: var(--white); border:1px solid var(--slate-200);
+            border-radius: var(--r-lg); padding:14px 18px;
+            display:flex; align-items:center; gap:12px;
+        }
+
+        .countdown-bar__icon {
+            width:36px; height:36px; border-radius: var(--r-sm);
+            background:rgba(15,29,64,0.07); color: var(--navy-700);
+            display:flex; align-items:center; justify-content:center; flex-shrink:0;
+        }
+
+        .countdown-bar__text { flex:1; }
+        .countdown-bar__main { font-size:13.5px; font-weight:600; color: var(--navy-900); }
+        .countdown-bar__sub  { font-size:11.5px; color: var(--slate-400); margin-top:2px; }
+
+        .countdown-bar__pill {
+            font-family: var(--font-display); font-size:14px; font-weight:700;
+            color:#7a5c14;
+            background:rgba(201,168,76,0.12); border:1px solid rgba(201,168,76,0.28);
+            padding:5px 16px; border-radius:100px; white-space:nowrap;
+        }
+
+        /* ============================================================
+           VIEW 2 — MY EVALUATIONS
+           ============================================================ */
+
+        /* Eval table */
+        .eval-table-wrap { overflow-x:auto; }
+
+        .eval-table {
+            width:100%; min-width:560px; border-collapse:collapse;
+        }
+
+        .eval-table thead {
+            background: var(--slate-50); border-bottom:1px solid var(--slate-200);
+        }
+
+        .eval-table th {
+            padding:12px 20px; text-align:left;
+            font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase;
+            color: var(--slate-400);
+        }
+
+        .eval-table td {
+            padding:16px 20px; border-top:1px solid var(--slate-100);
+            font-size:13.5px; color: var(--slate-700); vertical-align:middle;
+        }
+
+        .eval-table tbody tr { transition:background 0.15s ease; }
+        .eval-table tbody tr:hover { background:rgba(201,168,76,0.04); }
+
+        .teacher-block { display:flex; align-items:center; gap:12px; }
+
+        .teacher-avatar-sm {
+            width:38px; height:38px; border-radius: var(--r-sm);
+            background: linear-gradient(135deg, var(--navy-800), var(--navy-600));
+            color: var(--gold-light);
+            font-family: var(--font-display); font-size:12px; font-weight:700;
+            display:flex; align-items:center; justify-content:center; flex-shrink:0;
+            box-shadow:0 2px 8px rgba(11,18,41,0.18);
+        }
+
+        .teacher-block__name { font-weight:600; color: var(--navy-900); display:block; font-size:13.5px; }
+        .teacher-block__dept { font-size:11.5px; color: var(--slate-400); }
+
+        .badge-done {
+            display:inline-flex; align-items:center; gap:5px;
+            padding:4px 12px; border-radius:100px;
+            background: var(--green-100); color: var(--green-700);
+            border:1px solid rgba(22,163,74,0.22);
+            font-size:11.5px; font-weight:600;
+        }
+
+        .badge-pending {
+            display:inline-flex; align-items:center; gap:5px;
+            padding:4px 12px; border-radius:100px;
+            background: var(--amber-100); color: var(--amber-700);
+            border:1px solid rgba(146,64,14,0.20);
+            font-size:11.5px; font-weight:600;
+        }
+
+        .btn-evaluate {
+            display:inline-flex; align-items:center; gap:7px;
+            padding:8px 16px; border:none; border-radius: var(--r-sm);
+            background: linear-gradient(135deg, var(--navy-800), var(--navy-600));
+            color: var(--white);
+            font-family: var(--font-body); font-size:12.5px; font-weight:600;
+            cursor:pointer; text-decoration:none;
+            transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+            box-shadow:0 3px 10px rgba(11,18,41,0.24);
+            white-space:nowrap;
+        }
+
+        .btn-evaluate:hover { opacity:0.88; transform:translateY(-1px); color: var(--white); }
+
+        .btn-done {
+            display:inline-flex; align-items:center; gap:7px;
+            padding:8px 16px; border-radius: var(--r-sm);
+            background:rgba(22,163,74,0.08);
+            color: var(--green-700);
+            border:1px solid rgba(22,163,74,0.20);
+            font-size:12.5px; font-weight:500;
+            cursor:default;
+        }
+
+        /* Empty table state */
+        .table-empty {
+            text-align:center; padding:36px 20px;
+            color: var(--slate-400); font-size:13px;
+        }
+
+        .table-empty svg { color: var(--slate-300); margin-bottom:8px; display:block; margin-inline:auto; }
+
+        /* ============================================================
+           VIEW 3 — EVALUATION GUIDE
+           ============================================================ */
+        .guide-steps {
+            display:flex; flex-direction:column; gap:14px;
+        }
+
+        .guide-step {
+            display:flex; align-items:flex-start; gap:16px;
+            background: var(--white); border:1px solid var(--slate-200);
+            border-radius: var(--r-lg); padding:18px 20px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .guide-step:hover {
+            border-color:rgba(201,168,76,0.35);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .guide-step__num {
+            width:36px; height:36px; flex-shrink:0;
+            border-radius: var(--r-md);
+            background: linear-gradient(135deg, var(--navy-800), var(--navy-600));
+            color: var(--gold-light);
+            font-family: var(--font-display); font-size:15px; font-weight:700;
+            display:flex; align-items:center; justify-content:center;
+            box-shadow:0 3px 10px rgba(11,18,41,0.22);
+        }
+
+        .guide-step__body { display:flex; flex-direction:column; gap:3px; }
+
+        .guide-step__title {
+            font-family: var(--font-display); font-size:15px; font-weight:700;
+            color: var(--navy-900); line-height:1.2;
+        }
+
+        .guide-step__desc { font-size:13px; color: var(--slate-500); line-height:1.6; }
+
+        /* QR sample box */
+        .qr-sample {
+            background: var(--white); border:1px solid var(--slate-200);
+            border-radius: var(--r-xl); padding:24px;
+            display:flex; align-items:center; gap:22px;
+            box-shadow: var(--shadow-xs);
+        }
+
+        .qr-sample__box {
+            width:90px; height:90px; flex-shrink:0;
+            background: var(--slate-100);
+            border-radius: var(--r-md);
+            border:1px solid var(--slate-200);
+            display:flex; align-items:center; justify-content:center;
+            color: var(--slate-300);
+        }
+
+        .qr-sample__text h4 {
+            font-family: var(--font-display); font-size:16px; font-weight:700;
+            color: var(--navy-900); margin:0 0 5px;
+        }
+
+        .qr-sample__text p { font-size:13px; color: var(--slate-500); margin:0; line-height:1.6; }
+
+        /* ============================================================
+           VIEW 4 — PROFILE
+           ============================================================ */
+        .profile-header-card {
+            background: linear-gradient(155deg, var(--navy-800), var(--navy-600));
+            border:1px solid rgba(201,168,76,0.22);
+            border-radius: var(--r-xl); padding:26px 28px;
+            display:flex; align-items:center; gap:20px;
+            color: var(--white); margin-bottom:18px;
+            position:relative; overflow:hidden;
+        }
+
+        .profile-header-card::before {
+            content:''; position:absolute; inset:0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+            background-size:36px 36px; pointer-events:none;
+        }
+
+        .profile-avatar-lg {
+            width:68px; height:68px; border-radius:50%;
+            background: linear-gradient(135deg, rgba(201,168,76,0.22), rgba(201,168,76,0.10));
+            border:2px solid rgba(201,168,76,0.50);
+            color: var(--gold-light);
+            font-family: var(--font-display); font-size:22px; font-weight:700;
+            display:flex; align-items:center; justify-content:center;
+            flex-shrink:0; position:relative; z-index:1;
+            box-shadow:0 4px 14px rgba(201,168,76,0.20);
+        }
+
+        .profile-name-block { position:relative; z-index:1; }
+
+        .profile-name {
+            font-family: var(--font-display); font-size:20px; font-weight:700;
+            color: var(--white); margin:0 0 3px;
+        }
+
+        .profile-role {
+            font-size:11.5px; color:rgba(255,255,255,0.50);
+            letter-spacing:0.06em; text-transform:uppercase;
+        }
+
+        /* Info rows */
+        .profile-rows { display:flex; flex-direction:column; }
+
+        .profile-row {
+            display:flex; align-items:center; justify-content:space-between;
+            padding:14px 22px;
+            border-top:1px solid var(--slate-100);
+        }
+
+        .profile-row:first-child { border-top:none; }
+
+        .profile-row__label {
+            font-size:12px; font-weight:700; letter-spacing:0.06em;
+            text-transform:uppercase; color: var(--slate-400);
+            display:flex; align-items:center; gap:8px;
+        }
+
+        .profile-row__label svg { color: var(--slate-300); }
+
+        .profile-row__value {
+            font-size:14px; font-weight:500; color: var(--navy-900);
+            text-align:right;
+        }
+
+        /* Change password button */
+        .btn-change-pw {
+            display:inline-flex; align-items:center; gap:8px;
+            padding:10px 20px; border-radius: var(--r-sm);
+            border:1.5px solid var(--slate-200);
+            background: var(--white); color: var(--slate-700);
+            font-family: var(--font-body); font-size:13px; font-weight:500;
+            cursor:pointer; text-decoration:none;
+            transition: border-color 0.2s, background 0.2s, color 0.2s;
+        }
+        .btn-change-pw:hover { border-color: var(--navy-600); color: var(--navy-800); background: var(--slate-50); }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 768px) {
+            .sidebar { display:none; }
+            .view { padding:16px; }
+            .progress-row { grid-template-columns:1fr; }
+            .period-meta-row { flex-wrap:wrap; }
+        }
+
+        /* ==========================================================
+   PROFILE FORM
+========================================================== */
+
+.profile-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.profile-field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.profile-field__label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--slate-400);
+}
+
+.profile-input {
+    width: 100%;
+    height: 46px;
+    border-radius: var(--r-md);
+    border: 1.5px solid var(--slate-200);
+    background: var(--white);
+    padding: 0 14px;
+    font-size: 14px;
+    font-family: var(--font-body);
+    color: var(--navy-900);
+    transition: 0.2s ease;
+}
+
+.profile-input:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 4px rgba(201,168,76,0.10);
+}
+
+.profile-actions {
+    margin-top: 22px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-save-profile {
+    height: 44px;
+    padding: 0 18px;
+    border: none;
+    border-radius: var(--r-sm);
+    background: linear-gradient(135deg, var(--navy-800), var(--navy-600));
+    color: var(--white);
+    font-size: 13px;
+    font-weight: 600;
+    font-family: var(--font-body);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.btn-save-profile:hover {
+    transform: translateY(-1px);
+    opacity: 0.92;
+}
+
+.btn-save-profile:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+}
+
+@media (max-width: 768px) {
+    .profile-form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+    </style>
+</head>
+
+<body>
+<div class="app">
+
+    <!-- ═══════════════════════════════
+         SIDEBAR
+    ═══════════════════════════════ -->
+    <aside class="sidebar">
+        <div class="sidebar-inner">
+
+            <!-- Brand -->
+            <div class="brand">
+                <div class="brand-logo-row">
+                    <div class="brand-logo-ring">
+                        <img src="{% static 'images/aclc_logo.jpg' %}" class="brand-logo" alt="ACLC Logo">
+                    </div>
+                    <div class="brand-text">
+                        <span class="brand-name">ACLC · SES</span>
+                        <span class="brand-sub">Student Portal</span>
+                    </div>
+                </div>
+                <div class="brand-divider"></div>
+            </div>
+
+            <!-- Nav -->
+            <nav class="nav">
+                <span class="nav-label">Navigation</span>
+
+                <button class="nav-link active" data-view="dashboard">
+                    <span class="nav-icon">
+                        <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+                            <rect x="1" y="1" width="5.5" height="5.5" rx="1.2" stroke="currentColor" stroke-width="1.4"/>
+                            <rect x="8.5" y="1" width="5.5" height="5.5" rx="1.2" stroke="currentColor" stroke-width="1.4"/>
+                            <rect x="1" y="8.5" width="5.5" height="5.5" rx="1.2" stroke="currentColor" stroke-width="1.4"/>
+                            <rect x="8.5" y="8.5" width="5.5" height="5.5" rx="1.2" stroke="currentColor" stroke-width="1.4"/>
+                        </svg>
+                    </span>
+                    Dashboard
+                </button>
+
+                <button class="nav-link" data-view="evaluations">
+                    <span class="nav-icon">
+                        <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+                            <rect x="2" y="1.5" width="11" height="12" rx="1.8" stroke="currentColor" stroke-width="1.4"/>
+                            <path d="M4.5 7h6M4.5 4.5h4M4.5 9.5h4.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                        </svg>
+                    </span>
+                    My Evaluations
+                </button>
+
+                <button class="nav-link" data-view="guide">
+                    <span class="nav-icon">
+                        <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+                            <circle cx="7.5" cy="7.5" r="6" stroke="currentColor" stroke-width="1.4"/>
+                            <path d="M7.5 5.5c0-.83.67-1.5 1.5-1.5S10.5 4.67 10.5 5.5c0 1-1.5 1.5-1.5 2.5"
+                                  stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                            <circle cx="7.5" cy="10.5" r="0.8" fill="currentColor"/>
+                        </svg>
+                    </span>
+                    Evaluation Guide
+                </button>
+
+                <button class="nav-link" data-view="profile">
+                    <span class="nav-icon">
+                        <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+                            <circle cx="7.5" cy="5" r="3" stroke="currentColor" stroke-width="1.4"/>
+                            <path d="M1.5 13c0-3.314 2.686-6 6-6s6 2.686 6 6"
+                                  stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                        </svg>
+                    </span>
+                    Profile
+                </button>
+
+            </nav>
+
+            <!-- Sidebar footer -->
+            <div class="sidebar-footer">
+                <div class="user-strip">
+                    <div class="user-avatar">
+                        {{ request.user.first_name|first }}{{ request.user.last_name|first }}
+                    </div>
+                    <div class="user-info">
+                        <div class="user-name">{{ request.user.first_name }} {{ request.user.last_name }}</div>
+                        <div class="user-role">Student</div>
+                    </div>
+                </div>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button class="logout-btn" type="submit">
+                        <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                            <path d="M4.5 2H2a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h2.5M9 9.5l3-3-3-3M12 6.5H5"
+                                  stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Sign Out
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </aside>
+
+    <!-- ═══════════════════════════════
+         MAIN
+    ═══════════════════════════════ -->
+    <div class="main">
+
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="topbar-title" id="topbarTitle">Dashboard</div>
+            <span class="topbar-badge">Student</span>
+        </header>
+
+        <main class="content">
+
+            <!-- ══════════════════════
+                 VIEW 1 — DASHBOARD
+            ══════════════════════ -->
+            <div class="view active" id="view-dashboard">
+
+                <!-- Active Period Banner -->
+                {% if active_period %}
+                <div class="period-banner">
+                    <div class="period-banner__grid"></div>
+                    <div class="period-banner__inner">
+                        <div class="period-banner__eyebrow">
+                            <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+                                <circle cx="5.5" cy="5.5" r="4.5" stroke="currentColor" stroke-width="1.3"/>
+                                <path d="M5.5 3v3l2 1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                            </svg>
+                            Active Evaluation Period
+                        </div>
+                        <h3 class="period-banner__title">{{ active_period.name }}</h3>
+                        <p class="period-banner__sub">
+                            Evaluation is currently open. Please complete your instructor evaluations.
+                        </p>
+                        <div class="period-meta-row">
+                            <div class="period-meta-item">
+                                <span class="period-meta-item__label">School Year</span>
+                                <span class="period-meta-item__value">{{ active_period.school_year }}</span>
+                            </div>
+                            <div class="period-meta-item">
+                                <span class="period-meta-item__label">Semester</span>
+                                <span class="period-meta-item__value">{{ active_period.semester }}</span>
+                            </div>
+                            <div class="period-meta-item">
+                                <span class="period-meta-item__label">Term</span>
+                                <span class="period-meta-item__value">{{ active_period.term }}</span>
+                            </div>
+                            <div class="period-meta-item">
+                                <span class="period-meta-item__label">Status</span>
+                                <span class="period-meta-item__value">
+                                    <span class="status-active">
+                                        <span class="status-active__dot"></span>
+                                        Active
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="period-closed">
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                        <rect x="5" y="8" width="30" height="26" rx="3" stroke="currentColor" stroke-width="1.5" opacity="0.35"/>
+                        <path d="M5 16h30M14 5v6M26 5v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.35"/>
+                    </svg>
+                    <h4>No Active Evaluation Period</h4>
+                    <p>Evaluations are currently unavailable. Please check back later.</p>
+                </div>
+                {% endif %}
+
+                <!-- Evaluation Progress -->
+                <div class="progress-row">
+                    <div class="prog-card prog-card--completed">
+                        <div class="prog-icon prog-icon--green">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.6"/>
+                                <path d="M7 10l2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="prog-card__body">
+                            <span class="prog-label">Completed</span>
+                            <span class="prog-value">{{ evaluated_teachers|length }}</span>
+                        </div>
+                        <div class="prog-card__bar"></div>
+                    </div>
+
+                    <div class="prog-card prog-card--pending">
+                        <div class="prog-icon prog-icon--gold">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.6"/>
+                                <path d="M10 6v5l3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <div class="prog-card__body">
+                            <span class="prog-label">Pending</span>
+                            <span class="prog-value">{{ pending_teachers|length }}</span>
+                        </div>
+                        <div class="prog-card__bar"></div>
+                    </div>
+                </div>
+
+                <!-- Instructions -->
+                <div class="instruction-card">
+                    <div class="instruction-header">
+                        <span class="panel__tag">How to Evaluate</span>
+                        <h3 class="panel__title" style="font-family:var(--font-display);font-size:17px;font-weight:700;color:var(--navy-900);margin:0;line-height:1.2;">Simple Instructions</h3>
+                    </div>
+                    <div class="instruction-list">
+                        <div class="instruction-item">
+                            <span class="instruction-item__num">1</span>
+                            <span class="instruction-item__text">Open your phone camera or QR scanner app.</span>
+                        </div>
+                        <div class="instruction-item">
+                            <span class="instruction-item__num">2</span>
+                            <span class="instruction-item__text">Scan your instructor's QR code displayed in the classroom.</span>
+                        </div>
+                        <div class="instruction-item">
+                            <span class="instruction-item__num">3</span>
+                            <span class="instruction-item__text">Log in if prompted, then fill out the evaluation form.</span>
+                        </div>
+                        <div class="instruction-item">
+                            <span class="instruction-item__num">4</span>
+                            <span class="instruction-item__text">Submit your evaluation. Each instructor can only be evaluated once per period.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Evaluation Availability -->
+                {% if active_period %}
+                <div class="countdown-bar">
+                    <div class="countdown-bar__icon">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.4"/>
+                            <path d="M2 7h12M6 1.5v3M10 1.5v3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div class="countdown-bar__text">
+                        <div class="countdown-bar__main">Evaluation Availability</div>
+                        <div class="countdown-bar__sub">
+                            {{ active_period.start_date }} → {{ active_period.end_date }}
+                        </div>
+                    </div>
+                    <span class="countdown-bar__pill">Period Active</span>
+                </div>
+                {% endif %}
+
+            </div>
+
+            <!-- ══════════════════════
+                 VIEW 2 — MY EVALUATIONS
+            ══════════════════════ -->
+            <div class="view" id="view-evaluations">
+
+                <div class="page-heading">
+                    <p class="page-sub">Track your submitted and pending instructor evaluations for this period.</p>
+                </div>
+
+                <!-- Pending -->
+                {% if pending_teachers %}
+                <div class="panel" style="margin-bottom:18px;">
+                    <div class="panel__header">
+                        <span class="panel__tag">Pending</span>
+                        <h3 class="panel__title">Instructors to Evaluate</h3>
+                    </div>
+                    <div class="eval-table-wrap">
+                        <table class="eval-table">
+                            <thead>
+                                <tr>
+                                    <th>Instructor</th>
+                                    <th>Department</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in pending_teachers %}
+                                <tr>
+                                    <td>
+                                        <div class="teacher-block">
+                                            <div class="teacher-avatar-sm">
+                                                {{ item.teacher.first_name|first }}{{ item.teacher.last_name|first }}
+                                            </div>
+                                            <div>
+                                                <span class="teacher-block__name">{{ item.teacher.first_name }} {{ item.teacher.last_name }}</span>
+                                                <span class="teacher-block__dept">Instructor</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td style="color:var(--slate-500);font-size:13px;">
+                                        {{ item.teacher.department|upper|default:"—" }}
+                                    </td>
+                                    <td><span class="badge-pending">Pending</span></td>
+                                    <td>
+                                        {% if active_period %}
+                                        <a href="{% url 'scan_qr_page' %}?teacher={{ item.teacher.id }}"
+                                           class="btn-evaluate">
+                                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                                <rect x="1" y="1" width="4" height="4" rx="0.8" stroke="currentColor" stroke-width="1.3"/>
+                                                <rect x="7" y="1" width="4" height="4" rx="0.8" stroke="currentColor" stroke-width="1.3"/>
+                                                <rect x="1" y="7" width="4" height="4" rx="0.8" stroke="currentColor" stroke-width="1.3"/>
+                                                <rect x="7.5" y="7.5" width="1.5" height="1.5" fill="currentColor"/>
+                                                <rect x="9.5" y="7.5" width="1.5" height="1.5" fill="currentColor"/>
+                                                <rect x="7.5" y="9.5" width="1.5" height="1.5" fill="currentColor"/>
+                                                <rect x="9.5" y="9.5" width="1.5" height="1.5" fill="currentColor"/>
+                                            </svg>
+                                            Scan QR
+                                        </a>
+                                        {% else %}
+                                        <span style="font-size:12.5px;color:var(--slate-400);">Closed</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Completed -->
+                <div class="panel">
+                    <div class="panel__header">
+                        <span class="panel__tag">Submitted</span>
+                        <h3 class="panel__title">Completed Evaluations</h3>
+                    </div>
+                    <div class="eval-table-wrap">
+                        <table class="eval-table">
+                            <thead>
+                                <tr>
+                                    <th>Instructor</th>
+                                    <th>Department</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in evaluated_teachers %}
+                                <tr>
+                                    <td>
+                                        <div class="teacher-block">
+                                            <div class="teacher-avatar-sm">
+                                                {{ item.teacher.first_name|first }}{{ item.teacher.last_name|first }}
+                                            </div>
+                                            <div>
+                                                <span class="teacher-block__name">{{ item.teacher.first_name }} {{ item.teacher.last_name }}</span>
+                                                <span class="teacher-block__dept">Instructor</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td style="color:var(--slate-500);font-size:13px;">
+                                        {{ item.teacher.department|upper|default:"—" }}
+                                    </td>
+                                    <td><span class="badge-done">
+                                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                                            <circle cx="5" cy="5" r="4.5" stroke="currentColor" stroke-width="1.2"/>
+                                            <path d="M3 5l1.5 1.5L7 3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                        Submitted
+                                    </span></td>
+                                    <td>
+                                        <span class="btn-done">
+                                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                                <path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                            Done
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="table-empty">
+                                        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                                            <rect x="4" y="4" width="20" height="20" rx="3" stroke="currentColor" stroke-width="1.4" opacity="0.35"/>
+                                            <path d="M8 14h12M8 10h8M8 18h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" opacity="0.4"/>
+                                        </svg>
+                                        No completed evaluations yet.
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ══════════════════════
+                 VIEW 3 — GUIDE
+            ══════════════════════ -->
+            <div class="view" id="view-guide">
+
+                <div class="page-heading">
+                    <p class="page-sub">Learn how to complete your instructor evaluation using the QR code system.</p>
+                </div>
+
+                <!-- QR sample -->
+                <div class="qr-sample" style="margin-bottom:20px;">
+                    <div class="qr-sample__box">
+                        <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+                            <rect x="4" y="4" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                            <rect x="7" y="7" width="8" height="8" fill="currentColor" opacity="0.3"/>
+                            <rect x="26" y="4" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                            <rect x="29" y="7" width="8" height="8" fill="currentColor" opacity="0.3"/>
+                            <rect x="4" y="26" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                            <rect x="7" y="29" width="8" height="8" fill="currentColor" opacity="0.3"/>
+                            <rect x="26" y="26" width="5" height="5" fill="currentColor" opacity="0.3"/>
+                            <rect x="33" y="26" width="5" height="5" fill="currentColor" opacity="0.3"/>
+                            <rect x="26" y="33" width="5" height="5" fill="currentColor" opacity="0.3"/>
+                            <rect x="33" y="33" width="5" height="5" fill="currentColor" opacity="0.3"/>
+                        </svg>
+                    </div>
+                    <div class="qr-sample__text">
+                        <h4>Sample Instructor QR Code</h4>
+                        <p>Each instructor has a unique QR code. Scan it with your phone camera to open the evaluation form directly.</p>
+                    </div>
+                </div>
+
+                <!-- Steps -->
+                <div class="guide-steps">
+
+                    <div class="guide-step">
+                        <div class="guide-step__num">1</div>
+                        <div class="guide-step__body">
+                            <span class="guide-step__title">Use  QR</span>
+                            <span class="guide-step__desc">Use any QR scanner.</span>
+                        </div>
+                    </div>
+
+                    <div class="guide-step">
+                        <div class="guide-step__num">2</div>
+                        <div class="guide-step__body">
+                            <span class="guide-step__title">Scan the Instructor's QR Code</span>
+                            <span class="guide-step__desc">Point your camera at the QR code displayed by your instructor. A link notification should appear on your screen.</span>
+                        </div>
+                    </div>
+
+                    <div class="guide-step">
+                        <div class="guide-step__num">3</div>
+                        <div class="guide-step__body">
+                            <span class="guide-step__title">Log In If Prompted</span>
+                            <span class="guide-step__desc">If the system asks you to log in, use your email and password to continue.</span>
+                        </div>
+                    </div>
+
+                    <div class="guide-step">
+                        <div class="guide-step__num">4</div>
+                        <div class="guide-step__body">
+                            <span class="guide-step__title">Fill Out the Evaluation Form</span>
+                            <span class="guide-step__desc">Your responses are anonymous and help improve teaching quality.</span>
+                        </div>
+                    </div>
+
+                    <div class="guide-step">
+                        <div class="guide-step__num">5</div>
+                        <div class="guide-step__body">
+                            <span class="guide-step__title">Submit Your Evaluation</span>
+                            <span class="guide-step__desc">Tap Submit to complete the process. Each instructor can only be evaluated once per evaluation period.</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ══════════════════════
+                 VIEW 4 — PROFILE
+            ══════════════════════ -->
+            <div class="view" id="view-profile">
+
+                <div class="page-heading">
+                    <span class="page-tag">Account</span>
+                    <h2 class="page-title">My Profile</h2>
+                    <p class="page-sub">Your basic account information for the academic evaluation portal.</p>
+                </div>
+
+                <!-- Profile header -->
+                <div class="profile-header-card">
+                    <div class="profile-avatar-lg">
+                        {{ request.user.first_name|first }}{{ request.user.last_name|first }}
+                    </div>
+                    <div class="profile-name-block">
+                        <h3 class="profile-name">
+                            {{ request.user.first_name }} {{ request.user.last_name }}
+                        </h3>
+                        <span class="profile-role">Student Account</span>
+                    </div>
+                </div>
+
+                <!-- Info panel -->
+<div class="panel">
+    <div class="panel__header">
+        <span class="panel__tag">Information</span>
+        <h3 class="panel__title">Account Details</h3>
+    </div>
+
+    <div class="panel__body">
+
+        <form method="POST" action="{% url 'student_update_profile' %}" id="profileForm">
+            {% csrf_token %}
+
+            <div class="profile-form-grid">
+
+                <!-- First Name -->
+                <div class="profile-field">
+                    <label class="profile-field__label">First Name</label>
+                    <input
+                        type="text"
+                        name="first_name"
+                        value="{{ request.user.first_name }}"
+                        class="profile-input track-change"
+                    >
+                </div>
+
+                <!-- Last Name -->
+                <div class="profile-field">
+                    <label class="profile-field__label">Last Name</label>
+                    <input
+                        type="text"
+                        name="last_name"
+                        value="{{ request.user.last_name }}"
+                        class="profile-input track-change"
+                    >
+                </div>
+
+                <!-- Email -->
+                <div class="profile-field">
+                    <label class="profile-field__label">Email Address</label>
+                    <input
+                        type="email"
+                        name="email"
+                        value="{{ request.user.email }}"
+                        class="profile-input track-change"
+                    >
+                </div>
+
+            <div class="profile-actions">
+                <button type="submit" class="btn-save-profile" id="saveProfileBtn" disabled>
+                    <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+                        <path d="M2 6.5l2.2 2.2L11 2"
+                              stroke="currentColor"
+                              stroke-width="1.5"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"/>
+                    </svg>
+                    Save Changes
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+    
+</div>
+
+</div>
+
+<script>
+(function () {
+    var views  = document.querySelectorAll(".view");
+    var links  = document.querySelectorAll(".nav-link[data-view]");
+    var topbar = document.getElementById("topbarTitle");
+
+    var TITLES = {
+        dashboard:   "Dashboard",
+        evaluations: "My Evaluations",
+        guide:       "Evaluation Guide",
+        profile:     "Profile"
+    };
+
+    links.forEach(function (link) {
+        link.addEventListener("click", function () {
+            var target = this.dataset.view;
+
+            /* Switch views */
+            views.forEach(function (v) { v.classList.remove("active"); });
+            var el = document.getElementById("view-" + target);
+            if (el) el.classList.add("active");
+
+            /* Switch nav active state */
+            links.forEach(function (l) { l.classList.remove("active"); });
+            this.classList.add("active");
+
+            /* Update topbar title */
+            if (topbar) topbar.textContent = TITLES[target] || "";
+        });
+    });
+}());
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const form = document.getElementById("profileForm");
+    const button = document.getElementById("saveProfileBtn");
+
+    if (!form || !button) return;
+
+    const fields = form.querySelectorAll(".track-change");
+
+    const initialValues = {};
+
+    fields.forEach(field => {
+        initialValues[field.name] = field.value;
+
+        field.addEventListener("input", function () {
+
+            let changed = false;
+
+            fields.forEach(f => {
+                if (f.value !== initialValues[f.name]) {
+                    changed = true;
+                }
+            });
+
+            button.disabled = !changed;
+        });
+    });
+
+});
+</script>
+
+</body>
+</html>

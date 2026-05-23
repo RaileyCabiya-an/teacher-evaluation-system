@@ -1,0 +1,345 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'users/css/admin_dashboard.css' %}">
+{% endblock %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-page">
+
+    <div class="top-row">
+
+        <!-- STAT CARDS -->
+        <div class="stats-grid">
+
+            <!-- Total Users -->
+            <div class="stat-card">
+                <div class="stat-icon stat-icon--navy">
+                    <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                        <circle cx="8"  cy="7"  r="3"   stroke="currentColor" stroke-width="1.7"/>
+                        <circle cx="15" cy="7"  r="2.5" stroke="currentColor" stroke-width="1.7"/>
+                        <path d="M1 18c0-3.866 3.134-7 7-7s7 3.134 7 7"
+                              stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                        <path d="M15 11c2.5 0 5 1.8 5 5"
+                              stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div class="stat-body">
+                    <span class="stat-label">Total Users</span>
+                    <span class="stat-value">{{ total_users }}</span>
+                </div>
+                <div class="stat-bar stat-bar--navy"></div>
+            </div>
+
+            <!-- Teachers -->
+            <div class="stat-card">
+                <div class="stat-icon stat-icon--gold">
+                    <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                        <path d="M11 2L2 7l9 5 9-5-9-5z"
+                              stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                        <path d="M2 7v7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                        <path d="M6 9.5v4.5a5 5 0 0 0 10 0V9.5"
+                              stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div class="stat-body">
+                    <span class="stat-label">Teachers</span>
+                    <span class="stat-value">{{ total_instructors }}</span>
+                </div>
+                <div class="stat-bar stat-bar--gold"></div>
+            </div>
+
+            <!-- Students -->
+            <div class="stat-card">
+                <div class="stat-icon stat-icon--green">
+                    <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                        <circle cx="11" cy="7" r="3.5" stroke="currentColor" stroke-width="1.7"/>
+                        <path d="M3 19c0-4.418 3.582-8 8-8s8 3.582 8 8"
+                              stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                        <path d="M15 13l1.5 1.5L19 12"
+                              stroke="currentColor" stroke-width="1.7"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div class="stat-body">
+                    <span class="stat-label">Students</span>
+                    <span class="stat-value">{{ total_students }}</span>
+                </div>
+                <div class="stat-bar stat-bar--green"></div>
+            </div>
+
+            <!-- Active Evaluations -->
+            <div class="stat-card">
+                <div class="stat-icon stat-icon--slate">
+                    <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                        <rect x="3" y="3" width="16" height="16" rx="2.5"
+                              stroke="currentColor" stroke-width="1.7"/>
+                        <path d="M7 11h8M7 7.5h5M7 14.5h6"
+                              stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                        <circle cx="17" cy="5" r="3" fill="currentColor" opacity="0.85"/>
+                    </svg>
+                </div>
+                <div class="stat-body">
+                    <span class="stat-label">Active Evaluations</span>
+                    <span class="stat-value">{{ total_evaluations }}</span>
+                </div>
+                <div class="stat-bar stat-bar--slate"></div>
+            </div>
+
+        </div>
+
+        <!-- BEST PERFORMING TEACHER -->
+        {% if best_teacher %}
+        <div class="best-teacher-card">
+
+            <!-- Decorative background grid -->
+            <div class="best-teacher-card__grid"></div>
+
+            <!-- Gold seal -->
+            <div class="best-teacher-card__seal">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                    <circle cx="20" cy="20" r="18" stroke="rgba(201,168,76,0.35)" stroke-width="1.2"/>
+                    <circle cx="20" cy="20" r="13" stroke="rgba(201,168,76,0.25)" stroke-width="1"/>
+                    <path d="M20 10l2.5 5.5 6 .8-4.3 4.2 1 5.9L20 23.5l-5.2 2.9 1-5.9L11.5 16.3l6-.8z"
+                          fill="rgba(201,168,76,0.30)" stroke="rgba(201,168,76,0.55)" stroke-width="1"/>
+                </svg>
+            </div>
+
+            <div class="best-teacher-card__inner">
+                <span class="best-teacher-card__eyebrow">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path d="M6 1l1.5 3.3 3.5.5-2.5 2.5.6 3.5L6 9l-3.1 1.8.6-3.5L1 4.8l3.5-.5z"
+                              fill="currentColor" stroke="currentColor" stroke-width="0.5" stroke-linejoin="round"/>
+                    </svg>
+                    Best Performing Instructor
+                </span>
+
+                <div class="best-teacher-card__avatar-row">
+                    <div class="best-teacher-card__avatar">
+                        {{ best_teacher.teacher.first_name|first }}{{ best_teacher.teacher.last_name|first }}
+                    </div>
+                    <div>
+                        <h3 class="best-teacher-card__name">
+                            {{ best_teacher.teacher.first_name }}
+                            {{ best_teacher.teacher.last_name }}
+                        </h3>
+                        <span class="best-teacher-card__role">Instructor</span>
+                    </div>
+                </div>
+
+                <div class="best-teacher-card__stats">
+                    <div class="best-stat">
+                        <span class="best-stat__value">{{ best_teacher.overall }}</span>
+                        <span class="best-stat__label">Overall Rating</span>
+                    </div>
+                    <div class="best-stat__divider"></div>
+                    <div class="best-stat">
+                        <span class="best-stat__value">{{ best_teacher.evaluation_count }}</span>
+                        <span class="best-stat__label">Evaluation{{ best_teacher.evaluation_count|pluralize }}</span>
+                    </div>
+                    <div class="best-stat__divider"></div>
+                    <div class="best-stat">
+                        <span class="best-stat__value">5.00</span>
+                        <span class="best-stat__label">Max Score</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        {% endif %}
+
+    </div>
+
+    <!-- ═══════════════════════════════
+         TEACHER PERFORMANCE TABLE
+    ═══════════════════════════════ -->
+    <div class="results-card">
+
+        <div class="results-header">
+            <div class="results-header__left">
+                <span class="results-tag">Evaluation Results</span>
+                <h2 class="results-title">Instructor Performance Overview</h2>
+                <p class="results-sub">Aggregated scores across all evaluation criteria and periods</p>
+            </div>
+        </div>
+
+        <div class="table-wrap">
+            <table class="eval-table">
+                <thead>
+                    <tr>
+                        <th>Instructor</th>
+                        <th>Overall Rating</th>
+                        <th>Performance Analytics</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for item in data %}
+                    <tr>
+
+                        <!-- Instructor -->
+                        <td>
+                            <div class="instructor-block">
+                                <div class="instructor-avatar">
+                                    {{ item.teacher.first_name|first }}{{ item.teacher.last_name|first }}
+                                </div>
+                                <div class="instructor-info">
+                                    <strong>{{ item.teacher.first_name }} {{ item.teacher.last_name }}</strong>
+                                    <span>Instructor</span>
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- Score -->
+                        <td>
+                            <div class="score-wrap">
+                                <span class="score-badge">{{ item.overall }}</span>
+                                <span class="score-sub">
+                                    / 5.00 &nbsp;·&nbsp;
+                                    {{ item.evaluation_count }} evaluation{{ item.evaluation_count|pluralize }}
+                                </span>
+                            </div>
+                        </td>
+
+                        <!-- Chart -->
+                        <td class="chart-td">
+                            <div class="chart-box">
+                                <div class="chart-legend">
+                                    <span class="legend-dot legend-dot--navy"></span> Teaching
+                                    <span class="legend-dot legend-dot--gold"></span> Communication
+                                    <span class="legend-dot legend-dot--green"></span> Classroom
+                                    <span class="legend-dot legend-dot--slate"></span> Punctuality
+                                    <span class="legend-dot legend-dot--mid"></span> Engagement
+                                </div>
+                                <canvas id="chart{{ forloop.counter }}"></canvas>
+                            </div>
+                        </td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+var charts = [];
+
+var LABELS      = ['Teaching', 'Communication', 'Classroom', 'Punctuality', 'Engagement'];
+var BAR_COLORS  = ['#0f1d40', '#c9a84c', '#16a34a', '#475569', '#1e3163'];
+var BAR_HOVER   = ['#162550', '#e8c97a', '#22c55e', '#64748b', '#3a5598'];
+
+async function loadCharts() {
+    try {
+        var res = await fetch('/api/charts/');
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        renderCharts(await res.json());
+    } catch (err) {
+        console.error('Chart load error:', err);
+    }
+}
+
+function renderCharts(data) {
+    charts.forEach(function (c) { c.destroy(); });
+    charts = [];
+
+    data.forEach(function (item) {
+        var canvas = document.getElementById(item.id);
+        if (!canvas) return;
+
+        var chart = new Chart(canvas.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: LABELS,
+                datasets: [{
+                    label: 'Score',
+                    data: item.values,
+                    backgroundColor: BAR_COLORS,
+                    hoverBackgroundColor: BAR_HOVER,
+                    borderRadius: 5,
+                    borderSkipped: false,
+                    barThickness: 24
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 700,
+                    easing: 'easeOutQuart'
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#06091a',
+                        titleColor: '#e8c97a',
+                        bodyColor: '#f1f5f9',
+                        padding: 12,
+                        cornerRadius: 8,
+                        displayColors: true,
+                        boxWidth: 10,
+                        boxHeight: 10,
+                        titleFont: {
+                            family: "'Playfair Display', serif",
+                            size: 13,
+                            weight: '700'
+                        },
+                        bodyFont: {
+                            family: "'Source Sans 3', sans-serif",
+                            size: 12
+                        },
+                        callbacks: {
+                            label: function(ctx) {
+                                return '  Score: ' + ctx.parsed.y + ' / 5.00';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        border: { display: false },
+                        ticks: {
+                            color: '#64748b',
+                            font: { family: "'Source Sans 3', sans-serif", size: 10.5 }
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        max: 5,
+                        border: { display: false },
+                        grid: {
+                            color: 'rgba(226,232,240,0.70)',
+                            lineWidth: 1
+                        },
+                        ticks: {
+                            color: '#94a3b8',
+                            stepSize: 1,
+                            font: { family: "'Source Sans 3', sans-serif", size: 10.5 },
+                            callback: function(val) {
+                                return val + '.0';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        charts.push(chart);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', loadCharts);
+</script>
+{% endblock %}

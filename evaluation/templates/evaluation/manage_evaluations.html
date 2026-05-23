@@ -1,0 +1,405 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'evaluation/css/manage_evaluations.css' %}">
+{% endblock %}
+
+{% block page_title %}Manage Evaluation{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-page">
+    <div class="dashboard-container">
+
+    <!-- SUCCESS MESSAGE -->
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+
+        <button class="btn-primary" onclick="openModal()">
+            + Create Evaluation Period
+        </button>
+
+    </div>
+
+    <!-- TABLE CARD -->
+    <div class="table-card">
+
+        <!-- HEADER -->
+        <div class="table-card__header">
+
+            <div class="table-card__title">
+                <span class="table-tag">Records</span>
+                <h3>Evaluation Period List</h3>
+            </div>
+
+            <div class="search-wrap">
+
+                <input
+                    type="text"
+                    id="searchEvaluation"
+                    placeholder="Search evaluation..."
+                    class="search-input"
+                >
+
+            </div>
+
+        </div>
+
+        <!-- TABLE -->
+        <div class="table-wrapper">
+
+    <table class="eval-table" id="evaluationTable">
+
+        <thead>
+            <tr>
+                <th>Period Name</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Status</th>
+                <th class="actions-header">
+                    Actions
+                </th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+        {% for p in periods %}
+
+            <tr>
+
+                <!-- PERIOD -->
+                <td class="cell-name">
+                    {{ p.school_year }} -
+                    {{ p.semester }} -
+                    {{ p.term }}
+                </td>
+
+                <!-- START -->
+                <td>
+                    {{ p.start_date }}
+                </td>
+
+                <!-- END -->
+                <td>
+                    {{ p.end_date }}
+                </td>
+
+                <!-- STATUS -->
+                <td>
+
+                    {% if p.is_active %}
+
+                        <span class="status-active">
+                            Active
+                        </span>
+
+                    {% else %}
+
+                        <span class="status-draft">
+                            Draft
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+                <!-- ACTIONS -->
+                <td class="cell-actions">
+
+                    <!-- EDIT -->
+                    <a href="{% url 'update_evaluation' p.id %}"
+                       class="btn-action btn-action--edit">
+
+                        Edit
+
+                    </a>
+
+                    <!-- TOGGLE -->
+                    <form action="{% url 'toggle_active' p.id %}"
+                          method="POST"
+                          class="toggle-form">
+
+                        {% csrf_token %}
+
+                        <label class="switch">
+
+                            <input
+                                type="checkbox"
+                                onchange="this.form.submit()"
+                                {% if p.is_active %}checked{% endif %}
+                            >
+
+                            <span class="slider"></span>
+
+                        </label>
+
+                    </form>
+
+                    <!-- DELETE -->
+                    <form action="{% url 'delete_evaluation' p.id %}"
+                          method="POST"
+                          class="delete-form">
+
+                        {% csrf_token %}
+
+                        <button type="submit"
+                                class="btn-action btn-action--delete"
+                                onclick="return confirm('Delete this evaluation period?');">
+
+                            Delete
+
+                        </button>
+
+                    </form>
+
+                </td>
+
+            </tr>
+
+        {% empty %}
+
+            <tr>
+
+                <td colspan="5" class="empty-state">
+                    No evaluation periods available.
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+</div>
+
+<!-- =====================================================
+     MODAL
+===================================================== -->
+
+<div
+    id="evaluationModal"
+    class="modal"
+    data-has-errors="{% if form.errors %}1{% else %}0{% endif %}"
+>
+
+    <div class="modal-content eval-modal">
+
+        <!-- HEADER -->
+        <div class="eval-modal__header">
+
+            <div class="eval-modal__header-text">
+
+                <h3>
+                    Create Evaluation Period
+                </h3>
+
+                <p>
+                    Set up a new academic evaluation schedule
+                </p>
+
+            </div>
+
+            <span class="close" onclick="closeModal()">
+                &times;
+            </span>
+
+        </div>
+
+        <!-- FORM -->
+<form method="POST" id="evaluationForm">
+
+    {% csrf_token %}
+
+    <div class="eval-modal__body">
+
+        <div class="form-grid">
+
+            <!-- SCHOOL YEAR -->
+            <div class="form-field full-width">
+
+                <label>School Year</label>
+
+                {{ form.school_year }}
+
+                <span class="error">
+                    {{ form.school_year.errors }}
+                </span>
+
+            </div>
+
+            <!-- SEMESTER -->
+            <div class="form-field">
+
+                <label>Semester</label>
+
+                {{ form.semester }}
+
+                <span class="error">
+                    {{ form.semester.errors }}
+                </span>
+
+            </div>
+
+            <!-- TERM -->
+            <div class="form-field">
+
+                <label>Term</label>
+
+                {{ form.term }}
+
+                <span class="error">
+                    {{ form.term.errors }}
+                </span>
+
+            </div>
+
+            <!-- START DATE -->
+            <div class="form-field">
+
+                <label>Start Date</label>
+
+                {{ form.start_date }}
+
+                <span class="error">
+                    {{ form.start_date.errors }}
+                </span>
+
+            </div>
+
+            <!-- END DATE -->
+            <div class="form-field">
+
+                <label>End Date</label>
+
+                {{ form.end_date }}
+
+                <span class="error">
+                    {{ form.end_date.errors }}
+                </span>
+
+            </div>
+
+            <!-- STATUS -->
+            <div class="form-field full-width">
+
+                <label>Evaluation Status</label>
+
+                <label class="toggle-label">
+
+                    {{ form.is_active }}
+
+                    <span class="toggle-text">
+                        Enable this evaluation period
+                    </span>
+
+                </label>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <div class="eval-modal__footer">
+
+        <button type="button"
+                class="btn-secondary"
+                onclick="closeModal()">
+            Cancel
+        </button>
+
+        <button type="submit"
+                class="btn-primary"
+                id="submitBtn">
+            Save Evaluation
+        </button>
+
+    </div>
+
+</form>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+
+    // OPEN MODAL
+    function openModal() {
+    document.getElementById("evaluationModal").classList.add("show");
+}
+
+function closeModal() {
+    document.getElementById("evaluationModal").classList.remove("show");
+}
+
+    // CLOSE WHEN CLICK OUTSIDE
+    window.onclick = function(event) {
+    const modal = document.getElementById("evaluationModal");
+
+    if (event.target === modal) {
+        modal.classList.remove("show");
+    }
+};
+
+    // SEARCH
+    const searchInput = document.getElementById("searchEvaluation");
+
+    if (searchInput) {
+
+        searchInput.addEventListener("keyup", function () {
+
+            let value = this.value.toLowerCase();
+
+            let rows = document.querySelectorAll("#evaluationTable tbody tr");
+
+            rows.forEach((row) => {
+
+                row.style.display = row.innerText
+                    .toLowerCase()
+                    .includes(value)
+                    ? ""
+                    : "none";
+
+            });
+
+        });
+
+    }
+
+    // PREVENT DOUBLE SUBMIT
+    document
+        .getElementById("evaluationForm")
+        .addEventListener("submit", function () {
+
+            document.getElementById("submitBtn").disabled = true;
+
+        });
+
+    // AUTO OPEN MODAL IF FORM HAS ERRORS
+    const modal = document.getElementById("evaluationModal");
+
+    if (modal.dataset.hasErrors === "1") {
+        modal.classList.add("show");
+    }
+
+</script>
+{% endblock %}

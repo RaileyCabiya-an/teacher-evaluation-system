@@ -1,0 +1,558 @@
+/* ============================================================
+   Admin Dashboard — Academic & Formal Design
+   Enhanced — consistent with login.css / base.html
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Source+Sans+3:wght@300;400;500;600&display=swap');
+
+:root {
+    --navy-950:   #06091a;
+    --navy-900:   #0b1229;
+    --navy-800:   #0f1d40;
+    --navy-700:   #162550;
+    --navy-600:   #1e3163;
+    --navy-400:   #3a5598;
+    --gold:       #c9a84c;
+    --gold-light: #e8c97a;
+    --gold-pale:  #f5e9c8;
+    --green-700:  #15803d;
+    --green-600:  #16a34a;
+    --green-100:  #dcfce7;
+    --slate-900:  #0f172a;
+    --slate-700:  #334155;
+    --slate-600:  #475569;
+    --slate-500:  #64748b;
+    --slate-400:  #94a3b8;
+    --slate-300:  #cbd5e1;
+    --slate-200:  #e2e8f0;
+    --slate-100:  #f1f5f9;
+    --slate-50:   #f8fafc;
+    --white:      #ffffff;
+    --off-white:  #f7f8fc;
+
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body:    'Source Sans 3', system-ui, sans-serif;
+
+    --r-sm:  6px;
+    --r-md:  10px;
+    --r-lg:  16px;
+    --r-xl:  22px;
+    --r-2xl: 28px;
+
+    --shadow-xs: 0 1px 4px rgba(6,9,26,0.06);
+    --shadow-sm: 0 2px 8px rgba(6,9,26,0.08);
+    --shadow-md: 0 8px 28px rgba(6,9,26,0.11);
+    --shadow-lg: 0 16px 48px rgba(6,9,26,0.16);
+}
+
+/* ============================================================
+   PAGE WRAPPER
+   ============================================================ */
+.dashboard-page {
+    padding: 28px;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    background: var(--off-white);
+}
+
+/* ============================================================
+   TOP ROW  (stats  +  best teacher side by side)
+   ============================================================ */
+.top-row {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 22px;
+    align-items: start;
+}
+
+/* ============================================================
+   STAT CARDS
+   ============================================================ */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+}
+
+.stat-card {
+    background: var(--white);
+    border: 1px solid var(--slate-200);
+    border-radius: var(--r-lg);
+    padding: 20px 18px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Top left corner accent — mirrors login card gold border */
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    border-radius: var(--r-lg) 0 0 var(--r-lg);
+    opacity: 0;
+    transition: opacity 0.22s ease;
+}
+
+.stat-card:hover::before { opacity: 1; }
+
+/* Bottom accent bar */
+.stat-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: 0 0 var(--r-lg) var(--r-lg);
+}
+
+.stat-bar--navy  { background: var(--navy-800); }
+.stat-bar--gold  { background: var(--gold); }
+.stat-bar--green { background: var(--green-600); }
+.stat-bar--slate { background: var(--slate-500); }
+
+/* Icon */
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--r-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.stat-icon--navy  { background: rgba(15,29,64,0.08);  color: var(--navy-800); }
+.stat-icon--gold  { background: rgba(201,168,76,0.12); color: #7a5c14; }
+.stat-icon--green { background: rgba(22,163,74,0.10);  color: var(--green-700); }
+.stat-icon--slate { background: rgba(71,85,105,0.09);  color: var(--slate-700); }
+
+/* Label + value */
+.stat-body {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding-bottom: 6px;
+}
+
+.stat-label {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--slate-400);
+}
+
+.stat-value {
+    font-family: var(--font-display);
+    font-size: 34px;
+    font-weight: 700;
+    color: var(--navy-900);
+    line-height: 1;
+}
+
+/* ============================================================
+   BEST TEACHER CARD
+   ============================================================ */
+.best-teacher-card {
+    position: relative;
+    background: linear-gradient(155deg, var(--navy-800) 0%, var(--navy-600) 100%);
+    border-radius: var(--r-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid rgba(201,168,76,0.20);
+    /* Match height of stats-grid */
+    min-height: 100%;
+}
+
+/* Fine grid texture (same as sidebar and hero) */
+.best-teacher-card__grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+    background-size: 28px 28px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Watermark seal */
+.best-teacher-card__seal {
+    position: absolute;
+    bottom: -16px;
+    right: -16px;
+    width: 100px;
+    height: 100px;
+    opacity: 0.55;
+    pointer-events: none;
+    z-index: 0;
+    transform: scale(2.4);
+    transform-origin: bottom right;
+}
+
+.best-teacher-card__inner {
+    position: relative;
+    z-index: 1;
+    padding: 24px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    height: 100%;
+}
+
+/* Eyebrow label */
+.best-teacher-card__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: rgba(201,168,76,0.14);
+    border: 1px solid rgba(201,168,76,0.30);
+    padding: 4px 12px 4px 10px;
+    border-radius: 100px;
+    align-self: flex-start;
+}
+
+/* Avatar row */
+.best-teacher-card__avatar-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.best-teacher-card__avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(201,168,76,0.25), rgba(201,168,76,0.10));
+    border: 2px solid rgba(201,168,76,0.50);
+    color: var(--gold-light);
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 14px rgba(201,168,76,0.20);
+}
+
+.best-teacher-card__name {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--white);
+    margin: 0 0 3px;
+    line-height: 1.2;
+}
+
+.best-teacher-card__role {
+    font-size: 11.5px;
+    color: rgba(255,255,255,0.50);
+    letter-spacing: 0.04em;
+}
+
+/* Stats row */
+.best-teacher-card__stats {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: var(--r-md);
+    backdrop-filter: blur(6px);
+}
+
+.best-stat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+}
+
+.best-stat__value {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gold-light);
+    line-height: 1;
+}
+
+.best-stat__label {
+    font-family: var(--font-body);
+    font-size: 10px;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.best-stat__divider {
+    width: 1px;
+    height: 32px;
+    background: rgba(255,255,255,0.12);
+    flex-shrink: 0;
+}
+
+/* ============================================================
+   RESULTS CARD
+   ============================================================ */
+.results-card {
+    background: var(--white);
+    border: 1px solid var(--slate-200);
+    border-radius: var(--r-2xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.results-header {
+    padding: 22px 28px 18px;
+    border-bottom: 1px solid var(--slate-100);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.results-header__left {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.results-tag {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: rgba(201,168,76,0.10);
+    border: 1px solid rgba(201,168,76,0.28);
+    padding: 3px 12px;
+    border-radius: 100px;
+    align-self: flex-start;
+}
+
+.results-title {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--navy-900);
+    line-height: 1.2;
+    margin: 0;
+}
+
+.results-sub {
+    font-size: 12.5px;
+    color: var(--slate-400);
+    margin: 0;
+    font-weight: 400;
+}
+
+/* ============================================================
+   TABLE
+   ============================================================ */
+.table-wrap { overflow-x: auto; }
+
+.eval-table {
+    width: 100%;
+    min-width: 900px;
+    border-collapse: collapse;
+}
+
+.eval-table thead {
+    background: var(--slate-50);
+    border-bottom: 1px solid var(--slate-200);
+}
+
+.eval-table th {
+    padding: 13px 28px;
+    text-align: left;
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--slate-400);
+}
+
+.eval-table td {
+    padding: 22px 28px;
+    border-top: 1px solid var(--slate-100);
+    vertical-align: middle;
+}
+
+.eval-table tbody tr { transition: background 0.15s ease; }
+.eval-table tbody tr:hover { background: rgba(201,168,76,0.035); }
+
+/* ── Instructor block ── */
+.instructor-block {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.instructor-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: var(--r-md);
+    background: linear-gradient(135deg, var(--navy-800), var(--navy-600));
+    color: var(--gold-light);
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(11,18,41,0.22);
+}
+
+.instructor-info strong {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy-900);
+    margin-bottom: 2px;
+}
+
+.instructor-info span {
+    font-size: 12px;
+    color: var(--slate-400);
+}
+
+/* ── Score badge ── */
+.score-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+}
+
+.score-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 18px;
+    border-radius: 100px;
+    background: linear-gradient(135deg, rgba(201,168,76,0.14), rgba(232,201,122,0.10));
+    border: 1px solid rgba(201,168,76,0.32);
+    color: #7a5c14;
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    min-width: 76px;
+    text-align: center;
+}
+
+.score-sub {
+    font-size: 11.5px;
+    color: var(--slate-400);
+    padding-left: 4px;
+}
+
+/* ── Chart cell ── */
+.chart-td { min-width: 420px; }
+
+.chart-box {
+    width: 100%;
+    max-width: 440px;
+    padding: 14px 16px 12px;
+    background: var(--slate-50);
+    border: 1px solid var(--slate-200);
+    border-radius: var(--r-lg);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Mini legend above chart */
+.chart-legend {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-family: var(--font-body);
+    font-size: 10.5px;
+    color: var(--slate-500);
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--slate-200);
+}
+
+.legend-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    margin-right: 3px;
+    flex-shrink: 0;
+}
+
+.legend-dot--navy  { background: #0f1d40; }
+.legend-dot--gold  { background: #c9a84c; }
+.legend-dot--green { background: #16a34a; }
+.legend-dot--slate { background: #475569; }
+.legend-dot--mid   { background: #1e3163; }
+
+/* Canvas height */
+.chart-box canvas { height: 170px !important; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1280px) {
+    .top-row {
+        grid-template-columns: 1fr 290px;
+    }
+}
+
+@media (max-width: 1080px) {
+    .top-row {
+        grid-template-columns: 1fr;
+    }
+    .best-teacher-card {
+        max-width: 520px;
+    }
+    .best-teacher-card__stats {
+        justify-content: space-around;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-page { padding: 16px; gap: 16px; }
+    .stats-grid { grid-template-columns: 1fr; }
+    .results-header { padding: 16px 18px 14px; }
+    .eval-table th,
+    .eval-table td  { padding: 14px 16px; }
+}
+
+@media (max-width: 480px) {
+    .stat-value { font-size: 28px; }
+    .best-teacher-card__name { font-size: 16px; }
+}
